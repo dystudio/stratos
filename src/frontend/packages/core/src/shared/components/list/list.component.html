@@ -194,12 +194,15 @@
       </mat-card>
     </ng-template>
     <ng-template #defaultNoEntriesMaxedResults>
-      <mat-card class="list-component__default-no-entries">
+      <app-max-list-message (showAllAfterMax)="showAllAfterMax()" [count]="paginatorSettings.length"
+        [config]="config.text?.maxedResults">
+      </app-max-list-message>
+      <!-- <mat-card class="list-component__default-no-entries">
         <mat-card-content>
           <div class="no-rows">{{config.text?.maxedResults || 'There are too many results. If available please use the
             filters to reduce the number of results.'}}</div>
         </mat-card-content>
-      </mat-card>
+      </mat-card> -->
     </ng-template>
     <div [hidden]="(showProgressBar$ | async) || (hasRows$ | async) || (dataSource.isLoadingPage$ | async)"
       class="list-component__no-entries">

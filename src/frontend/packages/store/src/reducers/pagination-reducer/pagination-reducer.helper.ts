@@ -149,8 +149,13 @@ function shouldFetchLocalList(
     return true;
   }
 
-  // Should a maxed local list be refetched?
-  if (pagination.maxedMode) {
+  if (!prevPagination.maxedState.ignoreMaxed && pagination.maxedState.ignoreMaxed && invalidOrMissingPage) {
+    return true;
+  }
+
+  // console.log()
+  // Should a maxed local list be re-fetched?
+  if (pagination.maxedState.isMaxedMode) {
     const paramsChanged = prevPagination && paginationParamsString(prevPagination.params) !== paginationParamsString(pagination.params);
     return invalidOrMissingPage || paramsChanged;
   }

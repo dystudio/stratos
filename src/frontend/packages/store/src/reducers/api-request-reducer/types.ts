@@ -14,6 +14,11 @@ export interface ActionState {
   message: string;
 }
 
+// export interface ListMaxedState {
+//   isMaxed: boolean;
+//   ignoreMaxed?: boolean;
+// }
+
 /**
  * Multi action lists can have different entity types per page
  * We use schemaKey to track this type
@@ -23,7 +28,9 @@ export interface ListActionState extends ActionState {
   /**
    * Does the collection size exceed the max allowed? Used in conjunction PaginationEntityState maxedMode.
    */
+  // TODO: RC Here
   maxed?: boolean;
+  // maxedState: ListMaxedState;
   baseEntityConfig?: EntityCatalogEntityConfig;
 }
 

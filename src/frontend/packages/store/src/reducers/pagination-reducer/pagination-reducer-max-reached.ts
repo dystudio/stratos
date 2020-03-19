@@ -1,8 +1,8 @@
-import { entityCatalog } from '../../entity-catalog/entity-catalog.service';
 import {
   LocalPaginationHelpers,
 } from '../../../../core/src/shared/components/list/data-sources-controllers/local-list.helpers';
 import { UpdatePaginationMaxedState } from '../../actions/pagination.actions';
+import { entityCatalog } from '../../entity-catalog/entity-catalog.service';
 import { PaginationEntityTypeState, PaginationState } from '../../types/pagination.types';
 
 export function paginationMaxReached(state: PaginationState, action: UpdatePaginationMaxedState): PaginationState {
@@ -14,7 +14,12 @@ export function paginationMaxReached(state: PaginationState, action: UpdatePagin
     state[entityKey][action.paginationKey],
     action.forcedEntityKey || entityKey
   );
-  const { maxedMode: oldMaxedMode } = state[entityKey][action.paginationKey];
+  const { maxedState: oldMaxedState } = state[entityKey][action.paginationKey];
+  if (oldMaxedState.ignoreMaxed) {
+    return state;
+  }
+  const oldMaxedMode = oldMaxedState.isMaxedMode;
+  // const { maxedMode: oldMaxedMode } = state[entityKey][action.paginationKey];
   const { pageNumber, pageRequest } = requestSection;
   const { maxed: oldCurrentlyMaxed = false } = pageRequest;
   const newCurrentlyMaxed = action.allEntities >= action.max;
@@ -42,7 +47,10 @@ export function paginationMaxReached(state: PaginationState, action: UpdatePagin
         }
       },
       // Once a list is maxed it can never go back, so can't set true to false
-      maxedMode: oldMaxedMode || newMaxedMode
+      maxedState: {
+        ...state[entityKey][action.paginationKey].maxedState,
+        isMaxedMode: oldMaxedMode || newMaxedMode
+      }
     }
   };
   return {

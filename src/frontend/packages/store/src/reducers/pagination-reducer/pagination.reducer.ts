@@ -1,6 +1,3 @@
-import { InitCatalogEntitiesAction } from '../../entity-catalog.actions';
-import { entityCatalog } from '../../entity-catalog/entity-catalog.service';
-import { getDefaultStateFromEntityCatalog } from '../../entity-catalog/entity-catalog.store-setup';
 import {
   CONNECT_ENDPOINTS_SUCCESS,
   DISCONNECT_ENDPOINTS_SUCCESS,
@@ -13,6 +10,8 @@ import {
   CLEAR_PAGINATION_OF_TYPE,
   ClearPaginationOfType,
   CREATE_PAGINATION,
+  IGNORE_MAXED_STATE,
+  IgnorePaginationMaxedState,
   REMOVE_PARAMS,
   RESET_PAGINATION,
   SET_CLIENT_FILTER,
@@ -27,8 +26,11 @@ import {
   UPDATE_MAXED_STATE,
 } from '../../actions/pagination.actions';
 import { ApiActionTypes } from '../../actions/request.actions';
+import { InitCatalogEntitiesAction } from '../../entity-catalog.actions';
+import { entityCatalog } from '../../entity-catalog/entity-catalog.service';
+import { getDefaultStateFromEntityCatalog } from '../../entity-catalog/entity-catalog.store-setup';
 import { mergeState } from '../../helpers/reducer.helper';
-import { PaginationEntityState, PaginationState } from '../../types/pagination.types';
+import { PaginationEntityState, PaginationEntityTypeState, PaginationState } from '../../types/pagination.types';
 import { UpdatePaginationMaxedState } from './../../actions/pagination.actions';
 import { paginationAddParams } from './pagination-reducer-add-params';
 import { paginationClearPages } from './pagination-reducer-clear-pages';
@@ -135,6 +137,26 @@ function paginate(action, state = {}, updatePagination) {
 
   if (action.type === UPDATE_MAXED_STATE) {
     return paginationMaxReached(state, action as UpdatePaginationMaxedState);
+  }
+
+  if (action.type === IGNORE_MAXED_STATE) {
+    // TODO: RC split out?
+    // Reset the pagination back to default and set the ignoreMaxed flag
+    const ignoreAction = action as IgnorePaginationMaxedState;
+    const entityKey = entityCatalog.getEntityKey(ignoreAction);
+    const entityState: PaginationEntityTypeState = {
+      ...state[entityKey],
+      [action.paginationKey]: {
+        ...getDefaultPaginationEntityState(),
+        maxedState: {
+          ignoreMaxed: true
+        }
+      }
+    };
+    return {
+      ...state,
+      [entityKey]: entityState
+    };
   }
 
   return enterPaginationReducer(state, action, updatePagination);

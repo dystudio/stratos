@@ -121,9 +121,11 @@ export function flattenPagination<T, C>(
   return firstRequest.pipe(
     first(),
     mergeMap(firstResData => {
+      // TODO: RC Test what happens when maxed
       const allResults = flattener.getTotalResults(firstResData);
       if (maxCount) {
         actionDispatcher(
+          // TODO: RC Here
           new UpdatePaginationMaxedState(maxCount, allResults, entityType, endpointType, paginationKey, forcedEntityKey)
         );
         if (allResults > maxCount) {

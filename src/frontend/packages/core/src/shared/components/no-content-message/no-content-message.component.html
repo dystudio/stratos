@@ -5,6 +5,12 @@
   </div>
   <mat-icon [fontSet]="iconFont">{{icon}}</mat-icon>
   <div class="first-line">{{firstLine}}</div>
+  <!-- // TODO: RC tidy? -->
   <div class="second-line">
-    <a *ngIf="secondLine?.link" [routerLink]="secondLine?.link">{{secondLine?.linkText}}</a>{{secondLine?.text}}</div>
+    <a *ngIf="secondLine?.link" [routerLink]="secondLine?.link">{{secondLine?.linkText}}</a>{{secondLine?.text}}
+  </div>
+  <div class="second-line" *ngFor="let line of otherLines">
+    <a *ngIf="line?.link" [routerLink]="line?.link">{{line?.linkText}}</a>{{line?.text}}
+  </div>
+  <ng-content></ng-content>
 </div>

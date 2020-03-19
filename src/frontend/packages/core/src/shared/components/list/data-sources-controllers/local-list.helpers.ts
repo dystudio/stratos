@@ -13,6 +13,13 @@ export class LocalPaginationHelpers {
     }
     return !!Object.values(pagination.pageRequests).find(request => request.maxed);
   }
+    // static isPaginationMaxed(pagination: PaginationEntityState) {
+  //   if (pagination.forcedLocalPage) {
+  //     const forcedPage = pagination.pageRequests[pagination.forcedLocalPage];
+  //     return forcedPage.maxedState.isMaxed && !forcedPage.maxedState.ignoreMaxed;
+  //   }
+  //   return !!Object.values(pagination.pageRequests).find(request => request.maxedState.isMaxed && !request.maxedState.ignoreMaxed);
+  // }
 
   /**
    * Gets a local page request section relating to a particular schema key.
